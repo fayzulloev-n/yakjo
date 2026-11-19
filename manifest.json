@@ -1,0 +1,25 @@
+{
+  "name": "Yakjo",
+  "short_name": "Yakjo",
+  "description": "Цифровой кабинет фонда Yakjo",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#17212b",
+  "theme_color": "#17212b",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/fluency/192/bank-building.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://img.icons8.com/fluency/512/bank-building.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

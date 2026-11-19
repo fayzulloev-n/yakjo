@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Yakjo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#17212b">
+
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/192/bank-building.png">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --tg-bg: #17212b;
+      --tg-surface: #242f3d;
+      --tg-card: #242f3d;
+      --tg-border: #1d2733;
+      --tg-text: #f5f5f5;
+      --tg-subtext: #7f91a4;
+      --tg-blue: #5288c1;
+      --tg-blue-btn: #2b5278;
+      --tg-active: #64b5f6;
+      --tg-green: #4fae69;
+      --tg-green-bg: rgba(79, 174, 105, 0.16);
+      --tg-red: #e55959;
+      --tg-red-bg: rgba(229, 89, 89, 0.16);
+      --tg-amber: #f59e0b;
+      --tg-amber-bg: rgba(245, 158, 11, 0.16);
+    }
+
+    body {
+      margin: 0; padding: 0;
+      font-family: -apple-system, 'Roboto', BlinkMacSystemFont, sans-serif;
+      background: var(--tg-bg);
+      color: var(--tg-text);
+      padding-bottom: 84px;
+      user-select: none;
+    }
+
+    .tg-header {
+      background: var(--tg-surface);
+      border-bottom: 1px solid var(--tg-border);
+      padding: 14px 18px;
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .tg-header-title { font-size: 19px; font-weight: 800; color: #fff; }
+    .tg-role-badge {
+      font-size: 11px; font-weight: 700;
+      background: rgba(82, 136, 193, 0.2); color: var(--tg-active);
+      padding: 4px 10px; border-radius: 20px; text-transform: uppercase;
+    }
+
+    .container { padding: 14px 16px; max-width: 540px; margin: 0 auto; }
+
+    .tg-card {
+      background: var(--tg-card);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      border: 1px solid var(--tg-border);
+    }
+    .tg-card-title {
+      font-size: 12px; font-weight: 700; color: var(--tg-subtext);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+    }
+    .tg-balance-big { font-size: 30px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }
+
+    .tg-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .tg-row:last-child { border-bottom: none; }
+    .tg-row-lbl { font-size: 14px; color: var(--tg-subtext); }
+    .tg-row-val { font-size: 15px; font-weight: 700; color: #fff; }
+
+    .tg-input {
+      width: 100%; padding: 13px 15px;
+      background: #17212b; border: 1px solid var(--tg-border);
+      border-radius: 12px; color: #fff; font-size: 15px;
+      margin-bottom: 10px; outline: none;
+    }
+    .tg-input:focus { border-color: var(--tg-active); }
+    select.tg-input option { background: #17212b; color: #fff; }
+
+    .tg-btn {
+      width: 100%; background: var(--tg-blue-btn); color: #fff;
+      border: none; border-radius: 12px; padding: 14px;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+    }
+    .tg-btn:active { transform: scale(0.98); background: #204060; }
+
+    .tg-btn-bio {
+      width: 100%; background: rgba(79, 174, 105, 0.16); color: var(--tg-green);
+      border: 1px solid rgba(79, 174, 105, 0.35); border-radius: 12px; padding: 13px;
+      font-size: 14.5px; font-weight: 700; cursor: pointer; margin-top: 10px;
+    }
+
+    .tg-btn-outline {
+      background: rgba(100, 181, 246, 0.14); color: var(--tg-active);
+      border: 1px solid rgba(100, 181, 246, 0.3);
+      padding: 7px 12px; font-size: 12.5px; border-radius: 10px;
+      font-weight: 700; cursor: pointer;
+    }
+
+    /* Фильтры в разделе Кредиты */
+    .filter-pills {
+      display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 2px;
+    }
+    .filter-pill {
+      background: #17212b; color: var(--tg-subtext); border: 1px solid var(--tg-border);
+      border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700;
+      white-space: nowrap; cursor: pointer;
+    }
+    .filter-pill.active {
+      background: rgba(100, 181, 246, 0.2); color: var(--tg-active); border-color: var(--tg-active);
+    }
+
+    .tg-tabbar {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 64px;
+      background: rgba(36, 47, 61, 0.96);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--tg-border);
+      display: flex; justify-content: space-around; align-items: center;
+      z-index: 1000; padding-bottom: env(safe-area-inset-bottom);
+    }
+    .tg-tab-item {
+      background: none; border: none; flex: 1;
+      display: flex; flex-direction: column; align-items: center;
+      color: var(--tg-subtext); font-size: 11px; font-weight: 600;
+      cursor: pointer; padding: 6px 0;
+    }
+    .tg-tab-item svg { width: 22px; height: 22px; fill: currentColor; margin-bottom: 3px; }
+    .tg-tab-item.active { color: var(--tg-active); font-weight: 800; }
+    .tg-tab-item.active svg { fill: var(--tg-active); filter: drop-shadow(0 0 6px rgba(100, 181, 246, 0.45)); }
+
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: 700; }
+    .badge-paid { background: var(--tg-green-bg); color: var(--tg-green); }
+    .badge-pending { background: rgba(255, 255, 255, 0.08); color: var(--tg-subtext); }
+    .badge-overdue { background: var(--tg-red-bg); color: var(--tg-red); }
+    .badge-internal { background: rgba(100, 181, 246, 0.16); color: var(--tg-active); }
+    .badge-external { background: var(--tg-amber-bg); color: var(--tg-amber); }
+
+    .toggle-box {
+      cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0 4px; color: var(--tg-active); font-size: 13.5px; font-weight: 700;
+    }
+
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.78); backdrop-filter: blur(4px);
+      z-index: 2000; display: flex; align-items: flex-end;
+    }
+    .modal-content {
+      background: var(--tg-surface); border-radius: 24px 24px 0 0;
+      width: 100%; max-height: 88vh; overflow-y: auto;
+      padding: 18px 16px 28px;
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--tg-border);
+    }
+
+    .sched-meta-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+      background: #17212b; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px;
+      font-size: 12px;
+    }
+    .sched-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .sched-table th {
+      background: #0e4d3e; color: #fff; padding: 7px 5px; text-align: right; font-weight: 700;
+    }
+    .sched-table th:first-child, .sched-table td:first-child { text-align: center; }
+    .sched-table th:nth-child(2), .sched-table td:nth-child(2) { text-align: center; }
+    .sched-table td { padding: 6px 5px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .sched-row-paid { background: rgba(79, 174, 105, 0.22) !important; color: #b9f6ca; }
+
+    .hidden { display: none !important; }
+
+    @media print {
+      @page { size: A4 portrait; margin: 10mm; }
+      body { background: #fff !important; color: #000 !important; padding: 0 !important; }
+      .tg-header, .container, .tg-tabbar, .no-print { display: none !important; }
+      .modal-overlay {
+        position: static !important; background: #fff !important;
+        display: block !important; backdrop-filter: none !important;
+      }
+      .modal-content {
+        background: #fff !important; color: #000 !important;
+        max-height: none !important; overflow: visible !important;
+        padding: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+      }
+      .modal-header { border-bottom: 2px solid #004561 !important; margin-bottom: 8px !important; }
+      #modBorrower { color: #004561 !important; font-size: 16px !important; }
+      .sched-meta-grid {
+        background: #f3f7f6 !important; color: #000 !important;
+        border: 1px solid #cfd8dc; padding: 8px 10px !important; margin-bottom: 8px !important;
+        font-size: 11px !important;
+      }
+      .sched-table { font-size: 10px !important; width: 100% !important; }
+      .sched-table th {
+        background: #004561 !important; color: #fff !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        padding: 4px 5px !important;
+      }
+      .sched-table td {
+        border: 1px solid #cbd5e1 !important; color: #000 !important;
+        padding: 3px 5px !important;
+      }
+      .sched-row-paid {
+        background: #00ff0038 !important; color: #000 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tg-header">
+    <div class="tg-header-title" id="hdrTitle">Yakjo</div>
+    <div class="tg-role-badge" id="hdrBadge">Защита</div>
+  </div>
+
+  <div class="container">
+
+    <!-- 0. ВХОД -->
+    <div id="scr-auth" class="tg-card text-center" style="margin-top: 36px; padding: 26px 20px;">
+      <div style="font-size: 44px; margin-bottom: 12px;">🔐</div>
+      <div style="font-size: 21px; font-weight: 800; margin-bottom: 4px;">Фонд «Yakjo»</div>
+      <div style="font-size: 13px; color: var(--tg-subtext); margin-bottom: 20px;">Введите номер телефона (без «+») и личный PIN-код</div>
+
+      <input type="tel" id="loginPhone" class="tg-input text-center" placeholder="79777660092" style="font-size: 17px; font-weight: 700;">
+      <input type="password" id="loginPin" class="tg-input text-center" placeholder="••••" maxlength="4" inputmode="numeric" style="font-size: 20px; letter-spacing: 6px;">
+
+      <button class="tg-btn" onclick="doLogin()">Войти по PIN-коду</button>
+      <button id="bioLoginBtn" class="tg-btn-bio hidden" onclick="doBiometricLogin()">👆 Войти по отпечатку / Face ID</button>
+      <button id="pwaInstallBtn" class="tg-btn-outline hidden" style="width:100%; margin-top:12px; padding:12px;" onclick="installPWA()">📲 Установить приложение Yakjo</button>
+
+      <div id="authError" style="color: var(--tg-red); font-size: 12.5px; margin-top: 12px;"></div>
+    </div>
+
+    <!-- 1. ПРОФИЛЬ -->
+    <div id="scr-me" class="hidden">
+      <div class="tg-card text-center">
+        <div class="tg-card-title">Мой совокупный капитал</div>
+        <div class="tg-balance-big" id="myTotal">—</div>
+        <div style="font-size: 13px; font-weight: 700; margin-top: 5px;" id="myProfitPlus">0 ₽ доход TWR</div>
+      </div>
+
+      <div class="tg-card">
+        <div class="tg-card-title">Депозитные накопления</div>
+        <div class="tg-row">
+          <span class="tg-row-lbl">Накопленный депозит:</span>
+          <span class="tg-row-val" id="myDep">—</span>
+        </div>
+        <div class="tg-row">
+          <span class="tg-row-lbl">Срок в фонде:</span>
+          <span class="tg-row-val" id="myMonths">—</span>
+        </div>
+        <div class="tg-row">
+          <span class="tg-row-lbl">Доля в капитале (TWR):</span>
+          <span class="tg-row-val" id="myShare">—</span>
+        </div>
+        <div class="tg-row">
+          <span class="tg-row-lbl">Дата вступления:</span>
+          <span class="tg-row-val" id="myDate">—</span>
+        </div>
+
+        <div class="toggle-box" onclick="toggleDepositList()">
+          <span id="depToggleTitle">📅 История взносов по месяцам</span>
+          <span id="depArrow">▼</span>
+        </div>
+        <div id="depositMonthsList" class="hidden" style="margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;"></div>
+      </div>
+
+      <div class="tg-card">
+        <div class="tg-card-title">Безопасность аккаунта</div>
+        <div class="tg-row">
+          <span class="tg-row-lbl">👆 Вход по отпечатку / Face ID</span>
+          <button id="bioToggleBtn" class="tg-btn-outline" onclick="toggleBiometricSetup()">Включить</button>
+        </div>
+        <div id="bioSetupStatus" style="font-size: 12px; color: var(--tg-subtext); margin-top: 4px;"></div>
+      </div>
+
+      <button class="tg-btn" style="background: #202b36; color: var(--tg-red); margin-top: 8px;" onclick="doLogout()">Выйти из профиля</button>
+    </div>
+
+    <!-- 2. ФОНД -->
+    <div id="scr-fund" class="hidden">
+      <div class="tg-card text-center">
+        <div class="tg-card-title">Совокупные активы фонда</div>
+        <div class="tg-balance-big" id="fAssets">—</div>
+        <div style="font-size: 12px; color: var(--tg-subtext); margin-top: 4px;">Касса фонда + Работающий кредитный портфель</div>
+      </div>
+
+      <div class="tg-card">
+        <div class="tg-card-title">Ликвидность</div>
+        <div class="tg-row">
+          <span class="tg-row-lbl">💵 Свободная касса:</span>
+          <span class="tg-row-val" style="color: var(--tg-active);" id="fCash">—</span>
+        </div>
+        <div class="tg-row">
+          <span class="tg-row-lbl">💳 Кредитный портфель:</span>
+          <span class="tg-row-val" id="fLoans">—</span>
+        </div>
+        <div class="tg-row">
+          <span class="tg-row-lbl">⚠️ Просрочка:</span>
+          <span class="tg-row-val" style="color: var(--tg-red);" id="fOverdue">—</span>
+        </div>
+      </div>
+
+      <div class="tg-card">
+        <div class="tg-card-title">Оборот с основания</div>
+        <div class="tg-row">
+          <span class="tg-row-lbl">Всего выдано:</span>
+          <span class="tg-row-val" id="fIssued">—</span>
+        </div>
+        <div class="tg-row">
+          <span class="tg-row-lbl">Погашено тела:</span>
+          <span class="tg-row-val" style="color: var(--tg-green);" id="fRepaid">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. КРЕДИТЫ -->
+    <div id="scr-loans" class="hidden">
+      <div class="tg-card" style="padding-bottom: 8px;">
+        <div class="tg-card-title" id="loansListTitle">Действующие кредиты</div>
+        <div id="loanFilters" class="filter-pills hidden">
+          <button class="filter-pill active" onclick="setLoanFilter('all', this)">Все</button>
+          <button class="filter-pill" onclick="setLoanFilter('Внутренний', this)">Внутренние</button>
+          <button class="filter-pill" onclick="setLoanFilter('Внешний', this)">Внешние</button>
+          <button class="filter-pill" onclick="setLoanFilter('overdue', this)">Просрочка</button>
+        </div>
+        <div id="allLoansList">Загрузка договоров…</div>
+      </div>
+    </div>
+
+    <!-- 4. ЖУРНАЛ (ТОЛЬКО АДМИН) -->
+    <div id="scr-admin" class="hidden">
+      <div class="tg-card">
+        <div class="tg-card-title">1. 🔄 Погашение долга (тело + %)</div>
+        <select class="tg-input" id="admRepayLoan"></select>
+        <div style="display: flex; gap: 8px;">
+          <input type="number" class="tg-input" id="admRepayPrincipal" placeholder="Основной долг (₽)">
+          <input type="number" class="tg-input" id="admRepayInterest" placeholder="Проценты (₽)">
+        </div>
+        <button class="tg-btn" onclick="submitRepayment()">Провести погашение</button>
+        <div id="admRepayStatus" style="font-size: 12px; margin-top: 8px; text-align: center;"></div>
+      </div>
+
+      <div class="tg-card">
+        <div class="tg-card-title">2. 💳 Выдача кредита</div>
+        <select class="tg-input" id="admLoanType" onchange="onLoanTypeChange()">
+          <option value="Внутренний">Внутренний (участнику фонда)</option>
+          <option value="Внешний">Внешний (под поручительство)</option>
+        </select>
+        <select class="tg-input" id="admLoanGuarantor" onchange="onLoanTypeChange()"></select>
+        <input type="text" class="tg-input hidden" id="admLoanBorrower" placeholder="Имя реального получателя (заёмщика)">
+        <div style="display: flex; gap: 8px;">
+          <input type="number" class="tg-input" id="admLoanAmount" placeholder="Сумма (₽)">
+          <input type="number" class="tg-input" id="admLoanRate" placeholder="Ставка %" value="2">
+        </div>
+        <input type="number" class="tg-input" id="admLoanTerm" placeholder="Срок (мес)" value="6">
+        <button class="tg-btn" onclick="submitLoan()">Оформить займ</button>
+        <div id="admLoanStatus" style="font-size: 12px; margin-top: 8px; text-align: center;"></div>
+      </div>
+
+      <div class="tg-card">
+        <div class="tg-card-title">3. ➕ Добавление депозита</div>
+        <select class="tg-input" id="admDepName"></select>
+        <input type="number" class="tg-input" id="admDepAmount" placeholder="Сумма взноса (₽)" value="2000">
+        <input type="text" class="tg-input" id="admDepComment" placeholder="Примечание">
+        <button class="tg-btn" onclick="submitDeposit()">Записать депозит</button>
+        <div id="admDepStatus" style="font-size: 12px; margin-top: 8px; text-align: center;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- НИЖНЯЯ ПАНЕЛЬ -->
+  <div class="tg-tabbar hidden" id="mainTabBar">
+    <button class="tg-tab-item active" id="tab-btn-me" onclick="switchTgTab('me')">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      Профиль
+    </button>
+    <button class="tg-tab-item" id="tab-btn-fund" onclick="switchTgTab('fund')">
+      <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
+      Фонд
+    </button>
+    <button class="tg-tab-item hidden" id="tab-btn-loans" onclick="switchTgTab('loans')">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+      Кредиты
+    </button>
+    <button class="tg-tab-item hidden" id="tab-btn-admin" onclick="switchTgTab('admin')">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      Журнал
+    </button>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО ГРАФИКА -->
+  <div id="modalSchedule" class="modal-overlay hidden" onclick="closeSchedule()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <div style="font-weight: 800; font-size: 16px;" id="modBorrower">График платежей</div>
+          <div style="font-size: 11.5px; color: var(--tg-subtext);" id="modSub">Фонд «Yakjo»</div>
+        </div>
+        <div class="no-print" style="display:flex; gap:6px;">
+          <button class="tg-btn-outline" onclick="window.print()">📄 PDF</button>
+          <button class="tg-btn-outline" onclick="closeSchedule()">✕</button>
+        </div>
+      </div>
+      <div id="scheduleBody">Загрузка графика…</div>
+    </div>
+  </div>
+
+  <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbyVwaPQ68gkWUBMVILkIlTV-C25XU0abJuJLK9sY6ixwg8h74Me4ojiVQjhDU20fhUY1Q/exec";
+
+    let SESSION_TOKEN = localStorage.getItem('yakjo_token') || '';
+    let CURRENT_USER = null;
+    let ALL_LOANS = [];
+    let CURRENT_LOAN_FILTER = 'all';
+    let deferredPrompt = null;
+    let idleTimer = null;
+
+    // Регистрация Service Worker для установки PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('pwaInstallBtn');
+      if (btn) btn.classList.remove('hidden');
+    });
+
+    function installPWA() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => {
+        deferredPrompt = null;
+        document.getElementById('pwaInstallBtn').classList.add('hidden');
+      });
+    }
+
+    function fmt(n) { return (Number(n) || 0).toLocaleString('ru-RU') + ' ₽'; }
+
+    function esc(str) {
+      return String(str || '').replace(/[&<>"']/g, m => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[m]));
+    }
+
+    // Используем text/plain, чтобы браузер не отправлял CORS OPTIONS preflight в Google Apps Script
+    function apiCall(payload) {
+      return fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+        redirect: 'follow'
+      }).then(r => r.json());
+    }
+
+    function resetIdleTimer() {
+      clearTimeout(idleTimer);
+      if (SESSION_TOKEN) {
+        idleTimer = setTimeout(() => {
+          localStorage.removeItem('yakjo_token');
+          location.reload();
+        }, 10 * 60 * 1000);
+      }
+    }
+    ['click', 'touchstart', 'keydown'].forEach(ev => document.addEventListener(ev, resetIdleTimer));
+
+    function doLogin() {
+      const phone = document.getElementById('loginPhone').value.trim();
+      const pin = document.getElementById('loginPin').value.trim();
+      const errEl = document.getElementById('authError');
+      errEl.innerText = "Проверка данных…";
+
+      apiCall({ action: 'login', phone: phone, pin: pin })
+        .then(res => {
+          if (res.ok && res.token) {
+            SESSION_TOKEN = res.token;
+            localStorage.setItem('yakjo_token', res.token);
+            localStorage.setItem('yakjo_last_phone', res.user.phone);
+            document.getElementById('loginPin').value = '';
+            errEl.innerText = "";
+            loadDashboard();
+          } else {
+            errEl.innerText = res.error || "Ошибка доступа";
+          }
+        })
+        .catch(() => { errEl.innerText = "Ошибка соединения с сервером"; });
+    }
+
+    function doLogout() {
+      const tok = SESSION_TOKEN;
+      localStorage.removeItem('yakjo_token');
+      SESSION_TOKEN = '';
+      if (tok) apiCall({ action: 'logout', token: tok }).catch(() => {});
+      location.reload();
+    }
+
+    function loadDashboard() {
+      if (!SESSION_TOKEN) return;
+      resetIdleTimer();
+
+      apiCall({ action: 'get_full_data', token: SESSION_TOKEN })
+        .then(res => {
+          if (!res.ok) {
+            localStorage.removeItem('yakjo_token');
+            SESSION_TOKEN = '';
+            return;
+          }
+          CURRENT_USER = res.user;
+          setupInterface(res);
+        });
+    }
+
+    function setupInterface(data) {
+      document.getElementById('scr-auth').classList.add('hidden');
+      document.getElementById('mainTabBar').classList.remove('hidden');
+
+      const role = data.user.role;
+      const roleMap = { admin: 'Администратор', accountant: 'Бухгалтер', member: 'Пайщик' };
+      document.getElementById('hdrTitle').innerText = data.user.name;
+      document.getElementById('hdrBadge').innerText = roleMap[role] || 'Пайщик';
+
+      const showLoansTab = (role === 'admin' || role === 'accountant' || (data.loans && data.loans.length > 0));
+      document.getElementById('tab-btn-loans').classList.toggle('hidden', !showLoansTab);
+      document.getElementById('tab-btn-admin').classList.toggle('hidden', role !== 'admin');
+      document.getElementById('loanFilters').classList.toggle('hidden', role === 'member');
+
+      if (data.myInfo) {
+        document.getElementById('myTotal').innerText = fmt(data.myInfo.totalCapital);
+        const profEl = document.getElementById('myProfitPlus');
+        const p = data.myInfo.profit;
+        profEl.innerText = (p >= 0 ? '+' : '') + fmt(p) + ' доход TWR';
+        profEl.style.color = p >= 0 ? 'var(--tg-green)' : 'var(--tg-subtext)';
+        document.getElementById('myDep').innerText = fmt(data.myInfo.deposit);
+        document.getElementById('myMonths').innerText = data.myInfo.months + ' мес.';
+        document.getElementById('myShare').innerText = data.myInfo.twrShare.toFixed(2) + '%';
+        document.getElementById('myDate').innerText = data.myInfo.joinDate;
+      }
+
+      renderDepositHistory(data.myDepositHistory);
+      updateBiometricUI();
+
+      document.getElementById('fAssets').innerText = fmt(data.fund.totalAssets);
+      document.getElementById('fCash').innerText = fmt(data.fund.cash);
+      document.getElementById('fLoans').innerText = fmt(data.fund.loansActive);
+      document.getElementById('fOverdue').innerText = fmt(data.fund.overdue);
+      document.getElementById('fIssued').innerText = fmt(data.fund.totalIssued);
+      document.getElementById('fRepaid').innerText = fmt(data.fund.repaid);
+
+      if (role === 'admin') {
+        const depSel = document.getElementById('admDepName');
+        const guarSel = document.getElementById('admLoanGuarantor');
+        const repSel = document.getElementById('admRepayLoan');
+        depSel.innerHTML = ''; guarSel.innerHTML = ''; repSel.innerHTML = '';
+
+        data.members.forEach(m => {
+          depSel.add(new Option(m.name, m.name));
+          guarSel.add(new Option('Поручитель: ' + m.name, m.name));
+        });
+        data.loans.forEach(l => {
+          const label = l.loanType === 'Внешний'
+            ? `${l.borrower} (внешн., поруч. ${l.guarantor})`
+            : `${l.borrower} (${l.id})`;
+          const opt = new Option(label, l.id);
+          opt.dataset.borrower = l.borrower;
+          repSel.add(opt);
+        });
+        onLoanTypeChange();
+      }
+
+      ALL_LOANS = data.loans || [];
+      renderLoans(role);
+      switchTgTab('me');
+    }
+
+    function onLoanTypeChange() {
+      const type = document.getElementById('admLoanType').value;
+      const borrowerInput = document.getElementById('admLoanBorrower');
+      const rateInput = document.getElementById('admLoanRate');
+      if (type === 'Внешний') {
+        borrowerInput.classList.remove('hidden');
+        rateInput.value = '5';
+      } else {
+        borrowerInput.classList.add('hidden');
+        borrowerInput.value = '';
+        rateInput.value = '2';
+      }
+    }
+
+    function setLoanFilter(filter, btn) {
+      CURRENT_LOAN_FILTER = filter;
+      document.querySelectorAll('.filter-pill').forEach(el => el.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderLoans(CURRENT_USER ? CURRENT_USER.role : 'member');
+    }
+
+    // ============================================================
+    //  БИОМЕТРИЯ (WEBAUTHN)
+    // ============================================================
+
+    function bufToB64(buf) { return btoa(String.fromCharCode(...new Uint8Array(buf))); }
+    function b64ToBuf(b64) { return Uint8Array.from(atob(b64), c => c.charCodeAt(0)); }
+
+    function updateBiometricUI() {
+      const bioId = localStorage.getItem('yakjo_bio_id');
+      const btn = document.getElementById('bioToggleBtn');
+      const st = document.getElementById('bioSetupStatus');
+      if (!window.PublicKeyCredential) {
+        btn.innerText = 'Не поддерживается';
+        btn.disabled = true;
+        return;
+      }
+      if (bioId) {
+        btn.innerText = 'Отключить';
+        st.innerText = '✅ Вход по биометрии активен на этом устройстве';
+      } else {
+        btn.innerText = 'Включить';
+        st.innerText = 'Для быстрого входа без ввода PIN-кода';
+      }
+    }
+
+    async function toggleBiometricSetup() {
+      const st = document.getElementById('bioSetupStatus');
+      if (localStorage.getItem('yakjo_bio_id')) {
+        localStorage.removeItem('yakjo_bio_id');
+        localStorage.removeItem('yakjo_bio_secret');
+        await apiCall({ action: 'disable_biometric', token: SESSION_TOKEN });
+        updateBiometricUI();
+        return;
+      }
+
+      try {
+        st.innerText = '⏳ Подтвердите отпечаток или Face ID…';
+        const challenge = crypto.getRandomValues(new Uint8Array(32));
+        const userId = new TextEncoder().encode(CURRENT_USER.phone);
+
+        const cred = await navigator.credentials.create({
+          publicKey: {
+            challenge: challenge,
+            rp: { name: "Yakjo", id: window.location.hostname },
+            user: { id: userId, name: CURRENT_USER.phone, displayName: CURRENT_USER.name },
+            pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+            authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+            timeout: 60000
+          }
+        });
+
+        const credId = bufToB64(cred.rawId);
+        const res = await apiCall({ action: 'register_biometric', token: SESSION_TOKEN, credentialId: credId });
+        if (res.ok && res.bioSecret) {
+          localStorage.setItem('yakjo_bio_id', credId);
+          localStorage.setItem('yakjo_bio_secret', res.bioSecret);
+          localStorage.setItem('yakjo_bio_phone', CURRENT_USER.phone);
+          updateBiometricUI();
+        } else {
+          st.innerText = '❌ ' + (res.error || 'Не удалось сохранить ключ');
+        }
+      } catch (err) {
+        st.innerText = '⚠️ Биометрия недоступна (' + err.name + '). Используйте PIN.';
+      }
+    }
+
+    async function doBiometricLogin() {
+      const errEl = document.getElementById('authError');
+      const credId = localStorage.getItem('yakjo_bio_id');
+      const bioSecret = localStorage.getItem('yakjo_bio_secret');
+      const phone = localStorage.getItem('yakjo_bio_phone');
+
+      if (!credId || !bioSecret || !phone) {
+        errEl.innerText = 'Сначала войдите по PIN-коду и включите биометрию в профиле';
+        return;
+      }
+
+      try {
+        errEl.innerText = 'Подтвердите личность…';
+        const challenge = crypto.getRandomValues(new Uint8Array(32));
+        await navigator.credentials.get({
+          publicKey: {
+            challenge: challenge,
+            rpId: window.location.hostname,
+            allowCredentials: [{ type: "public-key", id: b64ToBuf(credId) }],
+            userVerification: "required",
+            timeout: 60000
+          }
+        });
+
+        const res = await apiCall({
+          action: 'biometric_login',
+          phone: phone,
+          credentialId: credId,
+          bioSecret: bioSecret
+        });
+
+        if (res.ok && res.token) {
+          SESSION_TOKEN = res.token;
+          localStorage.setItem('yakjo_token', res.token);
+          errEl.innerText = '';
+          loadDashboard();
+        } else {
+          errEl.innerText = res.error || 'Ошибка биометрического входа';
+        }
+      } catch (err) {
+        errEl.innerText = 'Проверка биометрии отменена. Введите PIN-код.';
+      }
+    }
+
+    // ============================================================
+    //  ОТРИСОВКА ИНТЕРФЕЙСА
+    // ============================================================
+
+    function toggleDepositList() {
+      const el = document.getElementById('depositMonthsList');
+      const arrow = document.getElementById('depArrow');
+      const isHidden = el.classList.contains('hidden');
+      el.classList.toggle('hidden', !isHidden);
+      arrow.innerText = isHidden ? '▲' : '▼';
+    }
+
+    function renderDepositHistory(hist) {
+      const el = document.getElementById('depositMonthsList');
+      const titleEl = document.getElementById('depToggleTitle');
+      if (!hist || hist.length === 0) {
+        titleEl.innerText = '📅 История взносов (0)';
+        el.innerHTML = '<div style="color:var(--tg-subtext); font-size:12px;">Взносов не найдено</div>';
+        return;
+      }
+      titleEl.innerText = '📅 История взносов (' + hist.length + ' оплат)';
+      let h = '';
+      hist.forEach((item, idx) => {
+        h += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:13px; border-bottom:1px solid rgba(255,255,255,0.04);">
+            <span>#${hist.length - idx} • ${esc(item.date)}</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-weight:700;">${fmt(item.amount)}</span>
+              <span class="badge badge-paid">✅ Оплачен</span>
+            </div>
+          </div>
+        `;
+      });
+      el.innerHTML = h;
+    }
+
+    function renderLoans(role) {
+      const container = document.getElementById('allLoansList');
+      let list = ALL_LOANS;
+
+      if (CURRENT_LOAN_FILTER === 'Внутренний' || CURRENT_LOAN_FILTER === 'Внешний') {
+        list = ALL_LOANS.filter(l => l.loanType === CURRENT_LOAN_FILTER);
+      } else if (CURRENT_LOAN_FILTER === 'overdue') {
+        list = ALL_LOANS.filter(l => String(l.status).includes('Просроч') || String(l.status).includes('Проблем') || l.overdue > 0);
+      }
+
+      document.getElementById('loansListTitle').innerText =
+        role === 'member' ? 'Мои активные кредиты' : 'Действующие кредиты (' + list.length + ')';
+
+      if (!list || list.length === 0) {
+        container.innerHTML = '<div style="color:var(--tg-subtext); padding:10px 0; font-size:13px;">Договоров не найдено</div>';
+        return;
+      }
+
+      let html = '';
+      list.forEach(l => {
+        const isOverdue = String(l.status).includes('Просроч') || String(l.status).includes('Проблем');
+        const badgeClass = isOverdue ? 'badge-overdue' : 'badge-paid';
+        const isExt = l.loanType === 'Внешний';
+        const typeBadge = isExt
+          ? '<span class="badge badge-external">Внешний</span>'
+          : '<span class="badge badge-internal">Внутренний</span>';
+
+        html += `
+          <div style="background:#1d2733; border-radius:14px; padding:12px 14px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; gap:6px;">
+              <div>
+                <span style="font-weight:800; font-size:15.5px; color:#fff;">${esc(l.borrower)}</span>
+                ${typeBadge}
+              </div>
+              <span class="badge ${badgeClass}">${esc(l.status)}</span>
+            </div>
+            ${isExt ? `<div style="font-size:12px; color:var(--tg-amber); margin-bottom:6px;">Поручитель: <b>${esc(l.guarantor)}</b> • ${esc(l.id)}</div>` : `<div style="font-size:12px; color:var(--tg-subtext); margin-bottom:6px;">Договор: ${esc(l.id)}</div>`}
+            <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--tg-subtext); margin-bottom:4px;">
+              <span>Остаток: <b style="color:#fff;">${fmt(l.debt)}</b></span>
+              <span>Выдано: <b style="color:var(--tg-text);">${fmt(l.amount)}</b></span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--tg-subtext); margin-bottom:8px;">
+              <span>Погашено тела: <b style="color:var(--tg-green);">${fmt(l.repaid)}</b></span>
+              <span>След. платёж: <b style="color:var(--tg-active);">${esc(l.nextDate)}</b></span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:11.5px; color:#8292a1;">Срок: ${l.term} мес • ${l.rate}%/мес</span>
+              <button class="tg-btn-outline" onclick="openSchedule('${esc(l.id)}')">График платежей ➔</button>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function openSchedule(loanId) {
+      document.getElementById('modBorrower').innerText = 'График: ' + loanId;
+      document.getElementById('modSub').innerText = 'Загрузка из листа «График»…';
+      document.getElementById('scheduleBody').innerHTML = '<div style="text-align:center; padding:24px; color:var(--tg-subtext);">Расчёт графика…</div>';
+      document.getElementById('modalSchedule').classList.remove('hidden');
+
+      apiCall({ action: 'get_loan_schedule', token: SESSION_TOKEN, loanId: loanId })
+        .then(res => {
+          if (!res.ok || !res.schedule) {
+            document.getElementById('scheduleBody').innerText = res.error || "Ошибка загрузки графика";
+            return;
+          }
+          document.getElementById('modBorrower').innerText = 'ГРАФИК: ' + res.borrower + ' (' + res.loanId + ')';
+          const guarText = res.loanType === 'Внешний' ? ` • Поручитель: ${res.guarantor}` : '';
+          document.getElementById('modSub').innerText = 'Выдан ' + res.issueDate + guarText + ' • Остаток: ' + fmt(res.actualDebt);
+
+          let html = `
+            <div class="sched-meta-grid">
+              <div><b>Сумма:</b> ${fmt(res.amount)}</div>
+              <div><b>Срок:</b> ${res.term} мес (${res.rate}%/мес)</div>
+              <div><b>Погашено тела:</b> ${fmt(res.repaidPrincipal)}</div>
+              <div><b>Остаток долга:</b> ${fmt(res.actualDebt)}</div>
+              <div><b>Всего выплат:</b> ${esc(res.summary.totalPayments)} ₽</div>
+              <div><b>Переплата:</b> ${esc(res.summary.overpayPct)}</div>
+            </div>
+            <table class="sched-table">
+              <thead>
+                <tr>
+                  <th>№</th><th>Дата</th><th>Платёж</th><th>%</th><th>Тело</th><th>Остаток</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          res.schedule.forEach(m => {
+            html += `
+              <tr class="${m.isPaid ? 'sched-row-paid' : ''}">
+                <td>${m.month}</td>
+                <td>${esc(m.date)}</td>
+                <td><b>${m.payment.toLocaleString('ru-RU')}</b></td>
+                <td>${m.interest.toLocaleString('ru-RU')}</td>
+                <td>${m.principal.toLocaleString('ru-RU')}</td>
+                <td>${m.balance.toLocaleString('ru-RU')}</td>
+              </tr>
+            `;
+          });
+
+          html += `</tbody></table>`;
+          document.getElementById('scheduleBody').innerHTML = html;
+        });
+    }
+
+    function closeSchedule() { document.getElementById('modalSchedule').classList.add('hidden'); }
+
+    function switchTgTab(tab) {
+      ['me', 'fund', 'loans', 'admin'].forEach(t => {
+        const scr = document.getElementById('scr-' + t);
+        const btn = document.getElementById('tab-btn-' + t);
+        if (scr) scr.classList.toggle('hidden', t !== tab);
+        if (btn) btn.classList.toggle('active', t === tab);
+      });
+    }
+
+    function submitRepayment() {
+      const sel = document.getElementById('admRepayLoan');
+      const loanId = sel.value;
+      const borrower = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].dataset.borrower : '';
+      const p = document.getElementById('admRepayPrincipal').value;
+      const i = document.getElementById('admRepayInterest').value;
+      const st = document.getElementById('admRepayStatus');
+      st.innerHTML = "⏳ Проведение платежа…";
+
+      apiCall({ action: 'add_repayment', token: SESSION_TOKEN, loanId: loanId, borrower: borrower, principal: p, interest: i })
+        .then(res => {
+          if (res.ok) {
+            st.innerHTML = '<span style="color:var(--tg-green);font-weight:700;">✅ Погашение записано!</span>';
+            loadDashboard();
+          } else st.innerHTML = '<span style="color:var(--tg-red);">' + esc(res.error) + '</span>';
+        });
+    }
+
+    function submitLoan() {
+      const loanType = document.getElementById('admLoanType').value;
+      const guarantor = document.getElementById('admLoanGuarantor').value;
+      const borrower = loanType === 'Внешний' ? document.getElementById('admLoanBorrower').value.trim() : guarantor;
+      const a = document.getElementById('admLoanAmount').value;
+      const r = document.getElementById('admLoanRate').value;
+      const t = document.getElementById('admLoanTerm').value;
+      const st = document.getElementById('admLoanStatus');
+      st.innerHTML = "⏳ Оформление займа…";
+
+      apiCall({ action: 'add_loan', token: SESSION_TOKEN, guarantor: guarantor, loanType: loanType, borrower: borrower, amount: a, rate: r, term: t })
+        .then(res => {
+          if (res.ok) {
+            st.innerHTML = `<span style="color:var(--tg-green);font-weight:700;">✅ Займ ${esc(res.loanId)} оформлен!</span>`;
+            loadDashboard();
+          } else st.innerHTML = '<span style="color:var(--tg-red);">' + esc(res.error) + '</span>';
+        });
+    }
+
+    function submitDeposit() {
+      const name = document.getElementById('admDepName').value;
+      const amount = document.getElementById('admDepAmount').value;
+      const comment = document.getElementById('admDepComment').value;
+      const st = document.getElementById('admDepStatus');
+      st.innerHTML = "⏳ Запись депозита…";
+
+      apiCall({ action: 'add_deposit', token: SESSION_TOKEN, name: name, amount: amount, comment: comment })
+        .then(res => {
+          if (res.ok) {
+            st.innerHTML = '<span style="color:var(--tg-green);font-weight:700;">✅ Депозит записан!</span>';
+            loadDashboard();
+          } else st.innerHTML = '<span style="color:var(--tg-red);">' + esc(res.error) + '</span>';
+        });
+    }
+
+    (function init() {
+      const lastPhone = localStorage.getItem('yakjo_last_phone');
+      if (lastPhone) document.getElementById('loginPhone').value = lastPhone;
+      if (localStorage.getItem('yakjo_bio_id') && window.PublicKeyCredential) {
+        document.getElementById('bioLoginBtn').classList.remove('hidden');
+      }
+      if (SESSION_TOKEN) loadDashboard();
+    })();
+  </script>
+</body>
+</html>
