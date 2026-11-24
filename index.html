@@ -16,7 +16,7 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     :root {
       --bg: #0f161e;
-      --surface: rgba(30, 41, 54, 0.78);
+      --surface: rgba(28, 39, 51, 0.78);
       --card: #19232f;
       --border: rgba(255, 255, 255, 0.08);
       --text: #f8fafc;
@@ -47,70 +47,47 @@
       padding-bottom: calc(96px + env(safe-area-inset-bottom));
     }
 
-    /* ПАРЯЩАЯ ВЕРХНЯЯ ШАПКА */
+    /* ПАРЯЩАЯ ВЕРХНЯЯ ПЛАШКА */
     .tg-header {
       position: fixed;
       top: calc(10px + env(safe-area-inset-top));
-      left: 12px;
-      right: 12px;
-      height: 54px;
+      left: 12px; right: 12px; height: 54px;
       background: var(--surface);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 0 18px;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      border-radius: 20px; padding: 0 18px; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
-    .tg-header-title { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.2px; }
+    .tg-header-title { font-size: 18px; font-weight: 800; color: #fff; }
     .tg-role-badge {
       font-size: 11px; font-weight: 700;
       background: rgba(100, 181, 246, 0.16); color: var(--active);
       padding: 5px 11px; border-radius: 14px; text-transform: uppercase;
-      letter-spacing: 0.4px;
     }
 
     .container { padding: 10px 14px; max-width: 520px; margin: 0 auto; }
 
-    /* ЭКРАН ВХОДА YAKJO */
+    /* ЭКРАН ВХОДА / БЛОКИРОВКИ */
     .auth-wrapper {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: calc(100vh - 150px);
-      padding: 10px 4px;
+      display: flex; flex-direction: column; justify-content: center;
+      min-height: calc(100vh - 150px); padding: 10px 4px;
     }
-    .brand-hero {
-      text-align: center;
-      margin-bottom: 32px;
-    }
+    .brand-hero { text-align: center; margin-bottom: 30px; }
     .brand-logo-text {
-      font-size: 50px;
-      font-weight: 900;
-      letter-spacing: 5px;
+      font-size: 50px; font-weight: 900; letter-spacing: 5px;
       background: linear-gradient(135deg, #ffffff 0%, #64b5f6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       margin-bottom: 6px;
     }
     .brand-tagline {
-      font-size: 12.5px;
-      color: var(--subtext);
-      letter-spacing: 1.6px;
-      text-transform: uppercase;
-      font-weight: 600;
+      font-size: 12.5px; color: var(--subtext);
+      letter-spacing: 1.6px; text-transform: uppercase; font-weight: 600;
     }
 
     .tg-card {
-      background: var(--card);
-      border-radius: 22px;
-      padding: 18px;
-      margin-bottom: 12px;
-      border: 1px solid var(--border);
+      background: var(--card); border-radius: 22px; padding: 18px;
+      margin-bottom: 12px; border: 1px solid var(--border);
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     }
     .tg-card-title {
@@ -131,8 +108,7 @@
       width: 100%; padding: 14px 16px;
       background: #101720; border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 14px; color: #fff; font-size: 15px;
-      margin-bottom: 12px; outline: none;
-      transition: border-color 0.2s;
+      margin-bottom: 12px; outline: none; transition: border-color 0.2s;
     }
     .tg-input:focus { border-color: var(--active); }
     select.tg-input option { background: #101720; color: #fff; }
@@ -147,8 +123,14 @@
     .tg-btn:active { transform: scale(0.98); }
 
     .tg-btn-bio {
-      width: 100%; background: rgba(79, 174, 105, 0.16); color: var(--green);
-      border: 1px solid rgba(79, 174, 105, 0.35); border-radius: 14px; padding: 14px;
+      width: 100%; background: rgba(79, 174, 105, 0.18); color: var(--green);
+      border: 1px solid rgba(79, 174, 105, 0.4); border-radius: 14px; padding: 16px;
+      font-size: 15.5px; font-weight: 800; cursor: pointer;
+    }
+
+    .tg-btn-pin-alt {
+      width: 100%; background: rgba(255, 255, 255, 0.06); color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 13px;
       font-size: 14.5px; font-weight: 700; cursor: pointer; margin-top: 10px;
     }
 
@@ -169,23 +151,17 @@
       background: rgba(100, 181, 246, 0.2); color: var(--active); border-color: var(--active);
     }
 
-    /* ПАРЯЩАЯ НИЖНЯЯ ПАНЕЛЬ */
+    /* ПАРЯЩАЯ НИЖНЯЯ ПЛАШКА */
     .tg-tabbar {
       position: fixed;
       bottom: calc(12px + env(safe-area-inset-bottom));
-      left: 14px;
-      right: 14px;
-      height: 64px;
+      left: 14px; right: 14px; height: 64px;
       background: var(--surface);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 24px;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 1000;
-      padding: 0 6px;
+      display: flex; justify-content: space-around; align-items: center;
+      z-index: 1000; padding: 0 6px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
     .tg-tab-item {
@@ -197,8 +173,7 @@
     }
     .tg-tab-item svg { width: 21px; height: 21px; fill: currentColor; margin-bottom: 3px; }
     .tg-tab-item.active {
-      color: var(--active);
-      font-weight: 800;
+      color: var(--active); font-weight: 800;
       background: rgba(100, 181, 246, 0.12);
     }
     .tg-tab-item.active svg { fill: var(--active); filter: drop-shadow(0 0 6px rgba(100, 181, 246, 0.45)); }
@@ -212,8 +187,19 @@
 
     .toggle-box {
       cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 0 4px; color: var(--active); font-size: 13.5px; font-weight: 700;
+      padding: 10px 0 4px; color: var(--active); font-size: 13px; font-weight: 700;
     }
+    .expand-list {
+      margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 6px; padding-bottom: 6px;
+    }
+
+    .health-banner {
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 12px;
+      font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 10px;
+    }
+    .health-ok { background: var(--green-bg); color: #86efac; border: 1px solid rgba(79, 174, 105, 0.3); }
+    .health-warn { background: var(--amber-bg); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
 
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -223,8 +209,7 @@
     .modal-content {
       background: #19232f; border-radius: 26px 26px 0 0;
       width: 100%; max-height: 88vh; overflow-y: auto;
-      padding: 20px 16px 32px;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 20px 16px 32px; border-top: 1px solid rgba(255,255,255,0.1);
     }
     .modal-header {
       display: flex; justify-content: space-between; align-items: center;
@@ -286,7 +271,7 @@
 </head>
 <body>
 
-  <!-- ВЕРХНЯЯ ШАПКА -->
+  <!-- ВЕРХНЯЯ ПЛАШКА -->
   <div class="tg-header hidden" id="mainHeader">
     <div class="tg-header-title" id="hdrTitle">Yakjo</div>
     <div class="tg-role-badge" id="hdrBadge">Пайщик</div>
@@ -301,14 +286,26 @@
         <div class="brand-tagline">Личный финансовый кабинет</div>
       </div>
 
-      <div class="tg-card" style="padding: 24px 20px;">
+      <!-- ОКНО БИОМЕТРИИ (ПОКАЗЫВАЕТСЯ СРАЗУ, ЕСЛИ ПРИВЯЗАНА БИОМЕТРИЯ) -->
+      <div id="authBioCard" class="tg-card hidden" style="padding: 24px 20px; text-align: center;">
+        <div style="font-size: 40px; margin-bottom: 10px;">👆</div>
+        <div style="font-size: 19px; font-weight: 800; margin-bottom: 6px;">Быстрый вход</div>
+        <div style="font-size: 13px; color: var(--subtext); margin-bottom: 20px;" id="bioAuthHint">Подтвердите личность по отпечатку или Face ID</div>
+
+        <button class="tg-btn-bio" onclick="doBiometricLogin()">Войти по биометрии</button>
+        <button class="tg-btn-pin-alt" onclick="showPinAuth()">Внести PIN</button>
+        <div id="bioAuthError" style="color: var(--red); font-size: 12.5px; margin-top: 12px;"></div>
+      </div>
+
+      <!-- ОКНО ВВОДА ТЕЛЕФОНА И PIN -->
+      <div id="authPinCard" class="tg-card" style="padding: 24px 20px;">
         <div style="font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 18px;">Вход</div>
 
         <input type="tel" id="loginPhone" class="tg-input text-center" placeholder="79001234567" style="font-size: 16.5px; font-weight: 600;">
         <input type="password" id="loginPin" class="tg-input text-center" placeholder="PIN-код (4 цифры)" maxlength="4" inputmode="numeric" style="font-size: 18px; letter-spacing: 5px;">
 
         <button class="tg-btn" onclick="doLogin()">Войти</button>
-        <button id="bioLoginBtn" class="tg-btn-bio hidden" onclick="doBiometricLogin()">👆 Войти по отпечатку / Face ID</button>
+        <button id="backToBioBtn" class="tg-btn-pin-alt hidden" onclick="showBioAuth()">👆 Вернуться к биометрии</button>
         <button id="pwaInstallBtn" class="tg-btn-outline hidden" style="width:100%; margin-top:12px; padding:12px;" onclick="installPWA()">📲 Установить приложение</button>
 
         <div id="authError" style="color: var(--red); font-size: 12.5px; margin-top: 12px; text-align: center;"></div>
@@ -342,11 +339,11 @@
           <span class="tg-row-val" id="myDate">—</span>
         </div>
 
-        <div class="toggle-box" onclick="toggleDepositList()">
+        <div class="toggle-box" onclick="toggleBlock('depositMonthsList', 'depArrow')">
           <span id="depToggleTitle">📅 История взносов по месяцам</span>
           <span id="depArrow">▼</span>
         </div>
-        <div id="depositMonthsList" class="hidden" style="margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;"></div>
+        <div id="depositMonthsList" class="expand-list hidden"></div>
       </div>
 
       <div class="tg-card">
@@ -363,40 +360,78 @@
 
     <!-- 2. СВОДКА ФОНДА (ТОЛЬКО АДМИН И БУХГАЛТЕР) -->
     <div id="scr-fund" class="hidden">
+      <!-- Общая сумма, которая есть в фонде: Касса + Кредиты -->
       <div class="tg-card text-center">
-        <div class="tg-card-title">Совокупные активы фонда</div>
+        <div class="tg-card-title">Всего в фонде (Касса + Капитал в работе)</div>
         <div class="tg-balance-big" id="fAssets">—</div>
-        <div style="font-size: 12px; color: var(--subtext); margin-top: 4px;">Касса + Работающий кредитный портфель</div>
+        <div style="font-size: 12.5px; color: var(--subtext); margin-top: 6px;" id="fAssetsBreak">Касса: — • В кредитах: —</div>
       </div>
 
+      <!-- Порядок: 1. Депозиты -> 2. Проценты (чистые) -> 3. Проценты дохода + расходы -> 4. Страховой резерв + расходы -->
       <div class="tg-card">
         <div class="tg-card-title">Ликвидность и резервы</div>
+
+        <!-- 1. Депозиты -->
         <div class="tg-row">
-          <span class="tg-row-lbl">💵 Свободная касса:</span>
-          <span class="tg-row-val" style="color: var(--active);" id="fCash">—</span>
+          <span class="tg-row-lbl">1. 🏦 Депозиты участников:</span>
+          <span class="tg-row-val" id="fDeposits">—</span>
         </div>
-        <div class="tg-row">
-          <span class="tg-row-lbl">💳 Кредитный портфель:</span>
-          <span class="tg-row-val" id="fLoans">—</span>
+
+        <!-- 2. Проценты (минус все расходы) -->
+        <div class="tg-row" style="border-bottom: none; padding-bottom: 4px;">
+          <span class="tg-row-lbl">2. 📈 Проценты (чистые, после расходов):</span>
+          <span class="tg-row-val" style="color: var(--green);" id="fNetProfit">—</span>
         </div>
-        <div class="tg-row">
-          <span class="tg-row-lbl">🛡️ Страховой резерв («Ёрдам»):</span>
+        <div class="toggle-box" style="padding-top: 2px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);" onclick="toggleBlock('opExpensesList1', 'opArrow1')">
+          <span id="opToggle1">🧾 Расходы фонда (—)</span>
+          <span id="opArrow1">▼</span>
+        </div>
+        <div id="opExpensesList1" class="expand-list hidden"></div>
+
+        <!-- 3. Проценты дохода (валовые) с раскрытием расходов -->
+        <div class="tg-row" style="border-bottom: none; padding-bottom: 4px;">
+          <span class="tg-row-lbl">3. 💹 Проценты дохода (валовые):</span>
+          <span class="tg-row-val" style="color: var(--active);" id="fGrossInterest">—</span>
+        </div>
+        <div class="toggle-box" style="padding-top: 2px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);" onclick="toggleBlock('opExpensesList2', 'opArrow2')">
+          <span id="opToggle2">📉 Вычет расходов по фонду (—)</span>
+          <span id="opArrow2">▼</span>
+        </div>
+        <div id="opExpensesList2" class="expand-list hidden"></div>
+
+        <!-- 4. Страховой резерв со списком расходов -->
+        <div class="tg-row" style="border-bottom: none; padding-bottom: 4px;">
+          <span class="tg-row-lbl">4. 🛡️ Страховой резерв («Ёрдам»):</span>
           <span class="tg-row-val" style="color: var(--green);" id="fInsurance">—</span>
+        </div>
+        <div class="toggle-box" style="padding-top: 2px;" onclick="toggleBlock('insExpensesList', 'insArrow')">
+          <span id="insToggleTitle">🤝 Выплаты и расходы страховки (—)</span>
+          <span id="insArrow">▼</span>
+        </div>
+        <div id="insExpensesList" class="expand-list hidden"></div>
+      </div>
+
+      <!-- Кредитный блок -->
+      <div class="tg-card">
+        <div class="tg-card-title">Состояние кредитного портфеля</div>
+        <div id="creditHealthBanner" class="health-banner health-ok">
+          <span>🟢</span>
+          <span id="creditHealthText">Проверка состояния кредитов…</span>
+        </div>
+        <div class="tg-row">
+          <span class="tg-row-lbl">💳 Сейчас в кредите (на руках):</span>
+          <span class="tg-row-val" id="fLoans">—</span>
         </div>
         <div class="tg-row">
           <span class="tg-row-lbl">⚠️ Просроченная сумма:</span>
           <span class="tg-row-val" style="color: var(--red);" id="fOverdue">—</span>
         </div>
-      </div>
-
-      <div class="tg-card">
-        <div class="tg-card-title">Оборот с основания</div>
         <div class="tg-row">
-          <span class="tg-row-lbl">Всего выдано:</span>
+          <span class="tg-row-lbl">📤 Всего выдано с основания:</span>
           <span class="tg-row-val" id="fIssued">—</span>
         </div>
         <div class="tg-row">
-          <span class="tg-row-lbl">Погашено тела:</span>
+          <span class="tg-row-lbl">📥 Погашено основного долга:</span>
           <span class="tg-row-val" style="color: var(--green);" id="fRepaid">—</span>
         </div>
       </div>
@@ -418,6 +453,23 @@
 
     <!-- 4. ЖУРНАЛ ОПЕРАЦИЙ (ТОЛЬКО АДМИН) -->
     <div id="scr-admin" class="hidden">
+      <!-- МАССОВОЕ ВНЕСЕНИЕ ЗА ВСЕХ УЧАСТНИКОВ -->
+      <div class="tg-card" style="border-color: rgba(79, 174, 105, 0.35);">
+        <div class="tg-card-title" style="color: var(--green);">⚡ Быстрый сбор за всех участников</div>
+        <div style="font-size: 12px; color: var(--subtext); margin-bottom: 10px;" id="bulkMembersHint">
+          Начислит депозит и страховку сразу всем активным пайщикам
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <input type="number" class="tg-input" id="bulkDepAmt" placeholder="Депозит (₽)" value="2000">
+          <input type="number" class="tg-input" id="bulkInsAmt" placeholder="Страховка (₽)" value="200">
+        </div>
+        <input type="text" class="tg-input" id="bulkComment" placeholder="Примечание" value="перевод на карту Кадам">
+        <button class="tg-btn" style="background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);" onclick="submitBulkCollection()">
+          Внести за всех одной кнопкой
+        </button>
+        <div id="bulkStatus" style="font-size: 12px; margin-top: 8px; text-align: center;"></div>
+      </div>
+
       <div class="tg-card">
         <div class="tg-card-title">1. 🔄 Погашение долга (тело + %)</div>
         <select class="tg-input" id="admRepayLoan"></select>
@@ -447,7 +499,7 @@
       </div>
 
       <div class="tg-card">
-        <div class="tg-card-title">3. ➕ Добавление депозита</div>
+        <div class="tg-card-title">3. ➕ Индивидуальный депозит</div>
         <select class="tg-input" id="admDepName"></select>
         <input type="number" class="tg-input" id="admDepAmount" placeholder="Сумма взноса (₽)" value="2000">
         <input type="text" class="tg-input" id="admDepComment" placeholder="Примечание">
@@ -458,7 +510,7 @@
 
   </div>
 
-  <!-- НИЖНЯЯ ПАНЕЛЬ С ТАБАМИ -->
+  <!-- НИЖНЯЯ ПАНЕЛЬ -->
   <div class="tg-tabbar hidden" id="mainTabBar">
     <button class="tg-tab-item active" id="tab-btn-me" onclick="switchTgTab('me')">
       <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -478,7 +530,7 @@
     </button>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО ГРАФИКА ВЫПЛАТ -->
+  <!-- МОДАЛЬНОЕ ОКНО ГРАФИКА -->
   <div id="modalSchedule" class="modal-overlay hidden" onclick="closeSchedule()">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-header">
@@ -496,10 +548,8 @@
   </div>
 
   <script>
-    // ============================================================
-    // ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ РАЗВЕРТЫВАНИЯ APPS SCRIPT (.../exec):
-    // ============================================================
-    const API_URL = "https://script.google.com/macros/s/AKfycbyVwaPQ68gkWUBMVILkIlTV-C25XU0abJuJLK9sY6ixwg8h74Me4ojiVQjhDU20fhUY1Q/exec";
+    // ВСТАВЬТЕ ВАШУ ССЫЛКУ APPS SCRIPT (.../exec):
+    const API_URL = "ВСТАВЬТЕ_СЮДА_URL_APPS_SCRIPT";
 
     let SESSION_TOKEN = localStorage.getItem('yakjo_token') || '';
     let CURRENT_USER = null;
@@ -545,16 +595,54 @@
       }).then(r => r.json());
     }
 
+    // Таймер бездействия: 2 минуты -> блокировка и запрос биометрии / PIN
     function resetIdleTimer() {
       clearTimeout(idleTimer);
       if (SESSION_TOKEN) {
         idleTimer = setTimeout(() => {
-          localStorage.removeItem('yakjo_token');
-          location.reload();
-        }, 10 * 60 * 1000);
+          lockApp();
+        }, 2 * 60 * 1000);
       }
     }
-    ['click', 'touchstart', 'keydown'].forEach(ev => document.addEventListener(ev, resetIdleTimer));
+    ['click', 'touchstart', 'keydown', 'scroll'].forEach(ev => document.addEventListener(ev, resetIdleTimer));
+
+    function lockApp() {
+      clearTimeout(idleTimer);
+      SESSION_TOKEN = '';
+      localStorage.removeItem('yakjo_token');
+      document.getElementById('mainHeader').classList.add('hidden');
+      document.getElementById('mainTabBar').classList.add('hidden');
+      ['scr-me', 'scr-fund', 'scr-loans', 'scr-admin'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      document.getElementById('scr-auth').classList.remove('hidden');
+      showAppropriateAuthScreen(true);
+    }
+
+    function showPinAuth() {
+      document.getElementById('authBioCard').classList.add('hidden');
+      document.getElementById('authPinCard').classList.remove('hidden');
+      if (localStorage.getItem('yakjo_bio_id') && window.PublicKeyCredential) {
+        document.getElementById('backToBioBtn').classList.remove('hidden');
+      }
+    }
+
+    function showBioAuth() {
+      document.getElementById('authPinCard').classList.add('hidden');
+      document.getElementById('authBioCard').classList.remove('hidden');
+    }
+
+    function showAppropriateAuthScreen(autoTriggerBio) {
+      const hasBio = localStorage.getItem('yakjo_bio_id') && localStorage.getItem('yakjo_bio_secret') && window.PublicKeyCredential;
+      if (hasBio) {
+        showBioAuth();
+        if (autoTriggerBio) {
+          setTimeout(() => { doBiometricLogin(true); }, 250);
+        }
+      } else {
+        showPinAuth();
+      }
+    }
 
     function doLogin() {
       const phone = document.getElementById('loginPhone').value.trim();
@@ -593,8 +681,7 @@
       apiCall({ action: 'get_full_data', token: SESSION_TOKEN })
         .then(res => {
           if (!res.ok) {
-            localStorage.removeItem('yakjo_token');
-            SESSION_TOKEN = '';
+            lockApp();
             return;
           }
           CURRENT_USER = res.user;
@@ -615,7 +702,6 @@
       const isPrivileged = (role === 'admin' || role === 'accountant');
       const showLoansTab = (isPrivileged || (data.loans && data.loans.length > 0));
 
-      // Вкладка Сводка (Фонд) доступна ТОЛЬКО Админу и Бухгалтеру
       document.getElementById('tab-btn-fund').classList.toggle('hidden', !isPrivileged);
       document.getElementById('tab-btn-loans').classList.toggle('hidden', !showLoansTab);
       document.getElementById('tab-btn-admin').classList.toggle('hidden', role !== 'admin');
@@ -636,13 +722,35 @@
       renderDepositHistory(data.myDepositHistory);
       updateBiometricUI();
 
-      document.getElementById('fAssets').innerText = fmt(data.fund.totalAssets);
-      document.getElementById('fCash').innerText = fmt(data.fund.cash);
-      document.getElementById('fLoans').innerText = fmt(data.fund.loansActive);
-      document.getElementById('fInsurance').innerText = fmt(data.fund.insuranceReserve);
-      document.getElementById('fOverdue').innerText = fmt(data.fund.overdue);
-      document.getElementById('fIssued').innerText = fmt(data.fund.totalIssued);
-      document.getElementById('fRepaid').innerText = fmt(data.fund.repaid);
+      // Сводка фонда
+      const f = data.fund;
+      document.getElementById('fAssets').innerText = fmt(f.totalAssets);
+      document.getElementById('fAssetsBreak').innerText = `Касса: ${fmt(f.cash)} • В кредитах: ${fmt(f.loansActive)}`;
+      document.getElementById('fDeposits').innerText = fmt(f.totalDeposits);
+      document.getElementById('fNetProfit').innerText = fmt(f.netProfit);
+      document.getElementById('fGrossInterest').innerText = fmt(f.grossInterest);
+      document.getElementById('fInsurance').innerText = fmt(f.insuranceReserve);
+
+      renderOpExpenses(f.opExpensesList, f.totalOpExpenses);
+      renderInsuranceExpenses(f.insuranceExpensesList, f.insuranceSpent);
+
+      // Кредитный блок
+      document.getElementById('fLoans').innerText = fmt(f.loansActive);
+      document.getElementById('fOverdue').innerText = fmt(f.overdue);
+      document.getElementById('fIssued').innerText = fmt(f.totalIssued);
+      document.getElementById('fRepaid').innerText = fmt(f.repaid);
+
+      const banner = document.getElementById('creditHealthBanner');
+      const healthText = document.getElementById('creditHealthText');
+      if (f.overdue === 0) {
+        banner.className = 'health-banner health-ok';
+        banner.firstElementChild.innerText = '🟢';
+        healthText.innerText = 'С кредитами всё хорошо — просрочек нет!';
+      } else {
+        banner.className = 'health-banner health-warn';
+        banner.firstElementChild.innerText = '🟢';
+        healthText.innerText = `В графике ${f.inScheduleCount} из ${f.totalActiveLoansCount} займов (на контроле: ${fmt(f.overdue)})`;
+      }
 
       if (role === 'admin') {
         const depSel = document.getElementById('admDepName');
@@ -654,6 +762,9 @@
           depSel.add(new Option(m.name, m.name));
           guarSel.add(new Option('Поручитель: ' + m.name, m.name));
         });
+        document.getElementById('bulkMembersHint').innerText =
+          `Начислит взносы сразу всем ${data.members.length} активным участникам`;
+
         data.loans.forEach(l => {
           const label = l.loanType === 'Внешний'
             ? `${l.borrower} (внешн., поруч. ${l.guarantor})`
@@ -668,6 +779,57 @@
       ALL_LOANS = data.loans || [];
       renderLoans(role);
       switchTgTab('me');
+    }
+
+    function toggleBlock(listId, arrowId) {
+      const el = document.getElementById(listId);
+      const arrow = document.getElementById(arrowId);
+      const isHidden = el.classList.contains('hidden');
+      el.classList.toggle('hidden', !isHidden);
+      if (arrow) arrow.innerText = isHidden ? '▲' : '▼';
+    }
+
+    function renderOpExpenses(list, totalSum) {
+      document.getElementById('opToggle1').innerText = `🧾 Расходы фонда (${fmt(totalSum)})`;
+      document.getElementById('opToggle2').innerText = `📉 Вычет расходов (${fmt(totalSum)})`;
+
+      let html = '';
+      if (!list || list.length === 0) {
+        html = '<div style="color:var(--subtext); font-size:12px;">Расходов не найдено</div>';
+      } else {
+        list.forEach(item => {
+          html += `
+            <div style="display:flex; justify-content:space-between; font-size:12.5px; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.03);">
+              <span style="color:var(--subtext);">${esc(item.date)} • ${esc(item.title)}</span>
+              <span style="color:var(--red); font-weight:700; white-space:nowrap;">-${fmt(item.amount)}</span>
+            </div>
+          `;
+        });
+      }
+      document.getElementById('opExpensesList1').innerHTML = html;
+      document.getElementById('opExpensesList2').innerHTML = html;
+    }
+
+    function renderInsuranceExpenses(list, totalSpent) {
+      document.getElementById('insToggleTitle').innerText = `🤝 Выплаты и расходы страховки (${fmt(totalSpent)})`;
+      const el = document.getElementById('insExpensesList');
+      if (!list || list.length === 0) {
+        el.innerHTML = '<div style="color:var(--subtext); font-size:12px;">Выплат не найдено</div>';
+        return;
+      }
+      let html = '';
+      list.forEach(item => {
+        html += `
+          <div style="padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:12.5px;">
+            <div style="display:flex; justify-content:space-between; font-weight:700;">
+              <span>${esc(item.recipient)} (${esc(item.date)})</span>
+              <span style="color:var(--red);">-${fmt(item.amount)}</span>
+            </div>
+            <div style="font-size:11.5px; color:var(--subtext); margin-top:2px;">${esc(item.category)} • ${esc(item.note)}</div>
+          </div>
+        `;
+      });
+      el.innerHTML = html;
     }
 
     function onLoanTypeChange() {
@@ -692,7 +854,7 @@
     }
 
     // ============================================================
-    //  БИОМЕТРИЯ (FACE ID / TOUCH ID)
+    //  БИОМЕТРИЯ (FACE ID / ОТПЕЧАТОК)
     // ============================================================
 
     function bufToB64(buf) {
@@ -764,18 +926,18 @@
           st.innerText = '❌ ' + (res.error || 'Не удалось сохранить ключ');
         }
       } catch (err) {
-        st.innerText = '⚠️ Биометрия недоступна на этом устройстве (' + err.name + '). Используйте PIN.';
+        st.innerText = '⚠️ Биометрия недоступна (' + err.name + '). Используйте PIN.';
       }
     }
 
-    async function doBiometricLogin() {
-      const errEl = document.getElementById('authError');
+    async function doBiometricLogin(isAuto) {
+      const errEl = document.getElementById('bioAuthError');
       const credId = localStorage.getItem('yakjo_bio_id');
       const bioSecret = localStorage.getItem('yakjo_bio_secret');
       const phone = localStorage.getItem('yakjo_bio_phone');
 
       if (!credId || !bioSecret || !phone) {
-        errEl.innerText = 'Сначала войдите по PIN и включите биометрию в профиле';
+        showPinAuth();
         return;
       }
 
@@ -808,21 +970,15 @@
           errEl.innerText = res.error || 'Ошибка входа';
         }
       } catch (err) {
-        errEl.innerText = 'Биометрия отменена или недоступна. Введите PIN.';
+        errEl.innerText = isAuto
+          ? 'Нажмите «Войти по биометрии» или выберите «Внести PIN»'
+          : 'Биометрия отменена. Нажмите кнопку снова или «Внести PIN».';
       }
     }
 
     // ============================================================
-    //  ОТРИСОВКА ИНТЕРФЕЙСА
+    //  ОТРИСОВКА ИСТОРИИ ДЕПОЗИТОВ И КРЕДИТОВ
     // ============================================================
-
-    function toggleDepositList() {
-      const el = document.getElementById('depositMonthsList');
-      const arrow = document.getElementById('depArrow');
-      const isHidden = el.classList.contains('hidden');
-      el.classList.toggle('hidden', !isHidden);
-      arrow.innerText = isHidden ? '▲' : '▼';
-    }
 
     function renderDepositHistory(hist) {
       const el = document.getElementById('depositMonthsList');
@@ -967,6 +1123,37 @@
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
+    // ============================================================
+    //  ОПЕРАЦИИ ЖУРНАЛА
+    // ============================================================
+
+    function submitBulkCollection() {
+      const depAmt = Number(document.getElementById('bulkDepAmt').value) || 0;
+      const insAmt = Number(document.getElementById('bulkInsAmt').value) || 0;
+      const comment = document.getElementById('bulkComment').value.trim();
+      const st = document.getElementById('bulkStatus');
+
+      if (!confirm(`Провести сбор за всех активных участников (Депозит: ${depAmt} ₽ + Страховка: ${insAmt} ₽)?`)) {
+        return;
+      }
+
+      st.innerHTML = "⏳ Массовая запись в Журнал…";
+      apiCall({
+        action: 'add_bulk_collection',
+        token: SESSION_TOKEN,
+        depAmount: depAmt,
+        insAmount: insAmt,
+        comment: comment
+      }).then(res => {
+        if (res.ok) {
+          st.innerHTML = `<span style="color:var(--green);font-weight:700;">✅ Успешно записано за ${res.membersCount} участников (${fmt(res.totalSum)})!</span>`;
+          loadDashboard();
+        } else {
+          st.innerHTML = '<span style="color:var(--red);">' + esc(res.error) + '</span>';
+        }
+      });
+    }
+
     function submitRepayment() {
       const sel = document.getElementById('admRepayLoan');
       const loanId = sel.value;
@@ -1023,10 +1210,12 @@
     (function init() {
       const lastPhone = localStorage.getItem('yakjo_last_phone');
       if (lastPhone) document.getElementById('loginPhone').value = lastPhone;
-      if (localStorage.getItem('yakjo_bio_id') && window.PublicKeyCredential) {
-        document.getElementById('bioLoginBtn').classList.remove('hidden');
+
+      if (SESSION_TOKEN) {
+        loadDashboard();
+      } else {
+        showAppropriateAuthScreen(true);
       }
-      if (SESSION_TOKEN) loadDashboard();
     })();
   </script>
 </body>
