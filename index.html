@@ -240,42 +240,6 @@
     .sched-row-paid { background: rgba(79, 174, 105, 0.22) !important; color: #b9f6ca; }
 
     .hidden { display: none !important; }
-
-    @media print {
-      @page { size: A4 portrait; margin: 10mm; }
-      body { background: #fff !important; color: #000 !important; padding: 0 !important; }
-      .tg-header, .container, .tg-tabbar, .no-print { display: none !important; }
-      .modal-overlay {
-        position: static !important; background: #fff !important;
-        display: block !important; backdrop-filter: none !important;
-      }
-      .modal-content {
-        background: #fff !important; color: #000 !important; border: none !important;
-        max-height: none !important; overflow: visible !important;
-        padding: 0 !important; border-radius: 0 !important; box-shadow: none !important;
-      }
-      .modal-header { border-bottom: 2px solid #004561 !important; margin-bottom: 8px !important; }
-      #modBorrower { color: #004561 !important; font-size: 16px !important; }
-      .sched-meta-grid {
-        background: #f3f7f6 !important; color: #000 !important;
-        border: 1px solid #cfd8dc; padding: 8px 10px !important; margin-bottom: 8px !important;
-        font-size: 11px !important;
-      }
-      .sched-table { font-size: 10px !important; width: 100% !important; }
-      .sched-table th {
-        background: #004561 !important; color: #fff !important;
-        -webkit-print-color-adjust: exact; print-color-adjust: exact;
-        padding: 4px 5px !important;
-      }
-      .sched-table td {
-        border: 1px solid #cbd5e1 !important; color: #000 !important;
-        padding: 3px 5px !important;
-      }
-      .sched-row-paid {
-        background: #00ff0038 !important; color: #000 !important;
-        -webkit-print-color-adjust: exact; print-color-adjust: exact;
-      }
-    }
   </style>
 </head>
 <body>
@@ -543,8 +507,8 @@
           <div style="font-weight: 800; font-size: 16px;" id="modBorrower">График платежей</div>
           <div style="font-size: 11.5px; color: var(--subtext);" id="modSub">YAKJO</div>
         </div>
-        <div class="no-print" style="display:flex; gap:6px;">
-          <button class="tg-btn-outline" onclick="window.print()">📄 PDF</button>
+        <div style="display:flex; gap:6px;">
+          <button class="tg-btn-outline" id="shareSchedBtn" onclick="shareSchedule()">📤 Поделиться</button>
           <button class="tg-btn-outline" onclick="closeSchedule()">✕</button>
         </div>
       </div>
@@ -554,11 +518,12 @@
 
   <script>
     // ВСТАВЬТЕ ВАШУ ССЫЛКУ APPS SCRIPT (.../exec):
-    const API_URL = "ВСТАВЬТЕ_СЮДА_URL_APPS_SCRIPT";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyVwaPQ68gkWUBMVILkIlTV-C25XU0abJuJLK9sY6ixwg8h74Me4ojiVQjhDU20fhUY1Q/exec";
 
     let SESSION_TOKEN = localStorage.getItem('yakjo_token') || '';
     let CURRENT_USER = null;
     let ALL_LOANS = [];
+    let CURRENT_SCHEDULE_DATA = null;
     let CURRENT_LOAN_FILTER = 'all';
     let deferredPrompt = null;
     let idleTimer = null;
@@ -1097,6 +1062,7 @@
     }
 
     function openSchedule(loanId) {
+      CURRENT_SCHEDULE_DATA = null;
       document.getElementById('modBorrower').innerText = 'График: ' + loanId;
       document.getElementById('modSub').innerText = 'Загрузка…';
       document.getElementById('scheduleBody').innerHTML = '<div style="text-align:center; padding:24px; color:var(--subtext);">Расчёт графика…</div>';
@@ -1108,6 +1074,7 @@
             document.getElementById('scheduleBody').innerText = res.error || "Ошибка загрузки графика";
             return;
           }
+          CURRENT_SCHEDULE_DATA = res;
           document.getElementById('modBorrower').innerText = 'ГРАФИК: ' + res.borrower + ' (' + res.loanId + ')';
           const guarText = res.loanType === 'Внешний' ? ` • Поручитель: ${res.guarantor}` : '';
           document.getElementById('modSub').innerText = 'Выдан ' + res.issueDate + guarText + ' • Остаток: ' + fmt(res.actualDebt);
@@ -1145,7 +1112,132 @@
 
           html += `</tbody></table>`;
           document.getElementById('scheduleBody').innerHTML = html;
+        })
+        .catch(() => {
+          document.getElementById('scheduleBody').innerText = "Ошибка сети при загрузке графика";
         });
+    }
+
+    async function shareSchedule() {
+      const res = CURRENT_SCHEDULE_DATA;
+      if (!res || !res.schedule) return;
+
+      const btn = document.getElementById('shareSchedBtn');
+      const oldText = btn.innerText;
+      btn.innerText = '⏳...';
+
+      const guarLine = res.loanType === 'Внешний' ? `\nПоручитель: ${res.guarantor}` : '';
+      const shareText =
+        `📊 ГРАФИК ПЛАТЕЖЕЙ YAKJO\n` +
+        `Заёмщик: ${res.borrower} (${res.loanId})${guarLine}\n` +
+        `Выдан: ${res.issueDate} | Срок: ${res.term} мес (${res.rate}%/мес)\n` +
+        `Сумма кредита: ${fmt(res.amount)}\n` +
+        `Погашено тела: ${fmt(res.repaidPrincipal)}\n` +
+        `Остаток долга: ${fmt(res.actualDebt)}\n` +
+        `Всего выплат: ${res.summary.totalPayments} ₽ (переплата ${res.summary.overpayPct})`;
+
+      const rows = res.schedule;
+      const w = 820;
+      const rowH = 38;
+      const headerH = 92;
+      const tableHeadH = 42;
+      const padBottom = 24;
+      const h = headerH + tableHeadH + rows.length * rowH + padBottom;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.fillStyle = '#0e4d3e';
+      ctx.fillRect(0, 0, w, headerH);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 24px sans-serif';
+      ctx.fillText(`YAKJO • ГРАФИК: ${res.borrower} (${res.loanId})`, 24, 38);
+      ctx.font = '15px sans-serif';
+      ctx.fillStyle = '#cde8df';
+      ctx.fillText(`Сумма: ${fmt(res.amount)} | Ставка: ${res.rate}% | Остаток долга: ${fmt(res.actualDebt)}`, 24, 68);
+
+      const cols = [
+        { label: '№', x: 35, align: 'center' },
+        { label: 'Дата', x: 120, align: 'center' },
+        { label: 'Платёж', x: 290, align: 'right' },
+        { label: 'Проценты', x: 440, align: 'right' },
+        { label: 'Основной долг', x: 620, align: 'right' },
+        { label: 'Остаток', x: 790, align: 'right' }
+      ];
+
+      ctx.fillStyle = '#004561';
+      ctx.fillRect(0, headerH, w, tableHeadH);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 15px sans-serif';
+      cols.forEach(c => {
+        ctx.textAlign = c.align;
+        ctx.fillText(c.label, c.x, headerH + 26);
+      });
+
+      rows.forEach((m, idx) => {
+        const y = headerH + tableHeadH + idx * rowH;
+        if (m.isPaid) {
+          ctx.fillStyle = '#d1fae5';
+        } else {
+          ctx.fillStyle = idx % 2 === 0 ? '#ffffff' : '#f8fafc';
+        }
+        ctx.fillRect(0, y, w, rowH);
+
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.beginPath();
+        ctx.moveTo(0, y + rowH);
+        ctx.lineTo(w, y + rowH);
+        ctx.stroke();
+
+        ctx.fillStyle = m.isPaid ? '#065f46' : '#0f172a';
+        ctx.font = m.isPaid ? 'bold 15px sans-serif' : '15px sans-serif';
+
+        const vals = [
+          String(m.month),
+          m.date,
+          m.payment.toLocaleString('ru-RU') + ' ₽',
+          m.interest.toLocaleString('ru-RU') + ' ₽',
+          m.principal.toLocaleString('ru-RU') + ' ₽',
+          m.balance.toLocaleString('ru-RU') + ' ₽'
+        ];
+        vals.forEach((v, ci) => {
+          ctx.textAlign = cols[ci].align;
+          ctx.fillText(v, cols[ci].x, y + 24);
+        });
+      });
+
+      canvas.toBlob(async (blob) => {
+        btn.innerText = oldText;
+        if (!blob) return;
+
+        const fileName = `Grafik_${res.borrower.replace(/\s+/g, '_')}.jpg`;
+        const file = new File([blob], fileName, { type: 'image/jpeg' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title: 'График платежей YAKJO',
+              text: shareText,
+              files: [file]
+            });
+            return;
+          } catch (e) {
+            if (e.name === 'AbortError') return;
+          }
+        }
+
+        try { await navigator.clipboard.writeText(shareText); } catch (e) {}
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = fileName;
+        a.click();
+        alert('Картинка графика скачана, а текст скопирован в буфер обмена!');
+      }, 'image/jpeg', 0.92);
     }
 
     function closeSchedule() { document.getElementById('modalSchedule').classList.add('hidden'); }
