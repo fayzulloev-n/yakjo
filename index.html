@@ -9,8 +9,31 @@
   <meta name="theme-color" content="#101720">
 
   <link rel="manifest" href="./manifest.json">
-  <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/192/bank-building.png">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+ {
+  "name": "YAKJO",
+  "short_name": "YAKJO",
+  "description": "YAKJO",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f161e",
+  "theme_color": "#0f161e",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+} 
 
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
