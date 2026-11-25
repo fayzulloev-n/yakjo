@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yakjo-pwa-v1';
+const CACHE_NAME = 'yakjo-pwa-v2';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -9,6 +9,5 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Пропускаем запросы к API напрямую в сеть
   event.respondWith(fetch(event.request));
 });
