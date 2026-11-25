@@ -111,6 +111,18 @@
     .tg-input:focus { border-color: var(--active); }
     select.tg-input option { background: #101720; color: #fff; }
 
+    input[type="date"].tg-input {
+      color-scheme: dark;
+      min-height: 48px;
+    }
+    .field-lbl {
+      font-size: 11px;
+      color: var(--subtext);
+      margin-bottom: 4px;
+      padding-left: 4px;
+      font-weight: 600;
+    }
+
     .tg-btn {
       width: 100%; background: var(--blue-btn); color: #fff;
       border: none; border-radius: 14px; padding: 15px;
@@ -352,7 +364,7 @@
       <button class="tg-btn" style="background: rgba(229, 89, 89, 0.14); color: var(--red); box-shadow: none; margin-top: 8px;" onclick="doLogout()">Выйти из профиля</button>
     </div>
 
-    <!-- 2. СВОДКА ФОНДА (БЕЗ ДУБЛЯ ПРОЦЕНТОВ, С ТОЧНЫМ БАЛАНСОМ) -->
+    <!-- 2. СВОДКА ФОНДА -->
     <div id="scr-fund" class="hidden">
       <div class="tg-card text-center">
         <div class="tg-card-title">Всего в фонде (Касса + В кредитах)</div>
@@ -363,13 +375,11 @@
       <div class="tg-card">
         <div class="tg-card-title">Структура капитала (Источники)</div>
 
-        <!-- 1. Депозиты -->
         <div class="tg-row">
           <span class="tg-row-lbl">1. 🏦 Депозиты участников:</span>
           <span class="tg-row-val" id="fDeposits">—</span>
         </div>
 
-        <!-- 2. Проценты (чистые после вычета расходов) + раскрытие расходов -->
         <div class="tg-row" style="border-bottom: none; padding-bottom: 4px;">
           <span class="tg-row-lbl">2. 📈 Проценты (доход минус расходы):</span>
           <span class="tg-row-val" style="color: var(--green);" id="fNetProfit">—</span>
@@ -380,7 +390,6 @@
         </div>
         <div id="opExpensesList" class="expand-list hidden"></div>
 
-        <!-- 3. Страховой резерв + раскрытие выплат -->
         <div class="tg-row" style="border-bottom: none; padding-bottom: 4px;">
           <span class="tg-row-lbl">3. 🛡️ Страховой резерв («Ёрдам»):</span>
           <span class="tg-row-val" style="color: var(--green);" id="fInsurance">—</span>
@@ -391,14 +400,12 @@
         </div>
         <div id="insExpensesList" class="expand-list hidden"></div>
 
-        <!-- Контрольная строка сходимости -->
         <div class="tg-row" style="padding-top: 12px;">
           <span class="tg-row-lbl" style="font-weight:700; color:#fff;">⚖️ Итого капитал (1+2+3):</span>
           <span class="tg-row-val" style="color: var(--active);" id="fTotalSources">—</span>
         </div>
       </div>
 
-      <!-- Кредитный блок -->
       <div class="tg-card">
         <div class="tg-card-title">Состояние кредитного портфеля</div>
         <div id="creditHealthBanner" class="health-banner health-ok">
@@ -438,14 +445,14 @@
       </div>
     </div>
 
-    <!-- 4. ЖУРНАЛ ОПЕРАЦИЙ (БЫСТРЫЙ СБОР В САМОМ НИЗУ) -->
+    <!-- 4. ЖУРНАЛ ОПЕРАЦИЙ -->
     <div id="scr-admin" class="hidden">
       <div class="tg-card">
         <div class="tg-card-title">1. 🔄 Погашение долга (тело + %)</div>
         <select class="tg-input" id="admRepayLoan"></select>
         <div style="display: flex; gap: 8px;">
-          <input type="number" class="tg-input" id="admRepayPrincipal" placeholder="Основной долг (₽)">
-          <input type="number" class="tg-input" id="admRepayInterest" placeholder="Проценты (₽)">
+          <input type="text" inputmode="numeric" class="tg-input" id="admRepayPrincipal" placeholder="Основной долг (₽)" oninput="formatAmountInput(this)" style="font-weight: 700;">
+          <input type="text" inputmode="numeric" class="tg-input" id="admRepayInterest" placeholder="Проценты (₽)" oninput="formatAmountInput(this)" style="font-weight: 700;">
         </div>
         <button class="tg-btn" onclick="submitRepayment()">Провести погашение</button>
         <div id="admRepayStatus" style="font-size: 12px; margin-top: 8px; text-align: center;"></div>
@@ -459,9 +466,21 @@
         </select>
         <select class="tg-input" id="admLoanGuarantor" onchange="onLoanTypeChange()"></select>
         <input type="text" class="tg-input hidden" id="admLoanBorrower" placeholder="Имя реального заёмщика">
+
         <div style="display: flex; gap: 8px;">
-          <input type="number" class="tg-input" id="admLoanAmount" placeholder="Сумма (₽)">
-          <input type="number" class="tg-input" id="admLoanRate" placeholder="Ставка %" value="2">
+          <div style="flex: 1;">
+            <div class="field-lbl">Дата выдачи</div>
+            <input type="date" class="tg-input" id="admLoanDate">
+          </div>
+          <div style="flex: 1;">
+            <div class="field-lbl">Дата 1-го платежа</div>
+            <input type="date" class="tg-input" id="admLoanFirstPay">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <input type="text" inputmode="numeric" class="tg-input" id="admLoanAmount" placeholder="Сумма (напр. 100 000)" oninput="formatAmountInput(this)" style="font-weight: 700;">
+          <input type="number" class="tg-input" id="admLoanRate" placeholder="Ставка %" value="2" style="max-width: 110px;">
         </div>
         <input type="number" class="tg-input" id="admLoanTerm" placeholder="Срок (мес)" value="6">
         <button class="tg-btn" onclick="submitLoan()">Оформить займ</button>
@@ -471,21 +490,20 @@
       <div class="tg-card">
         <div class="tg-card-title">3. ➕ Индивидуальный депозит</div>
         <select class="tg-input" id="admDepName"></select>
-        <input type="number" class="tg-input" id="admDepAmount" placeholder="Сумма взноса (₽)" value="2000">
+        <input type="text" inputmode="numeric" class="tg-input" id="admDepAmount" placeholder="Сумма взноса (₽)" value="2 000" oninput="formatAmountInput(this)" style="font-weight: 700;">
         <input type="text" class="tg-input" id="admDepComment" placeholder="Примечание">
         <button class="tg-btn" onclick="submitDeposit()">Записать депозит</button>
         <div id="admDepStatus" style="font-size: 12px; margin-top: 8px; text-align: center;"></div>
       </div>
 
-      <!-- 4. МАССОВЫЙ СБОР ЗА ВСЕХ УЧАСТНИКОВ В САМОМ НИЗУ -->
       <div class="tg-card" style="border-color: rgba(79, 174, 105, 0.35);">
         <div class="tg-card-title" style="color: var(--green);">4. ⚡ Быстрый сбор за всех участников</div>
         <div style="font-size: 12px; color: var(--subtext); margin-bottom: 10px;" id="bulkMembersHint">
           Начислит депозит и страховку сразу всем активным пайщикам
         </div>
         <div style="display: flex; gap: 8px;">
-          <input type="number" class="tg-input" id="bulkDepAmt" placeholder="Депозит (₽)" value="2000">
-          <input type="number" class="tg-input" id="bulkInsAmt" placeholder="Страховка (₽)" value="200">
+          <input type="text" inputmode="numeric" class="tg-input" id="bulkDepAmt" placeholder="Депозит (₽)" value="2 000" oninput="formatAmountInput(this)" style="font-weight: 700;">
+          <input type="text" inputmode="numeric" class="tg-input" id="bulkInsAmt" placeholder="Страховка (₽)" value="200" oninput="formatAmountInput(this)" style="font-weight: 700;">
         </div>
         <input type="text" class="tg-input" id="bulkComment" placeholder="Примечание" value="перевод на карту Кадам">
         <button class="tg-btn" style="background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);" onclick="submitBulkCollection()">
@@ -536,7 +554,7 @@
 
   <script>
     // ВСТАВЬТЕ ВАШУ ССЫЛКУ APPS SCRIPT (.../exec):
-    const API_URL = "https://script.google.com/macros/s/AKfycbyVwaPQ68gkWUBMVILkIlTV-C25XU0abJuJLK9sY6ixwg8h74Me4ojiVQjhDU20fhUY1Q/exec";
+    const API_URL = "ВСТАВЬТЕ_СЮДА_URL_APPS_SCRIPT";
 
     let SESSION_TOKEN = localStorage.getItem('yakjo_token') || '';
     let CURRENT_USER = null;
@@ -566,6 +584,29 @@
     }
 
     function fmt(n) { return (Number(n) || 0).toLocaleString('ru-RU') + ' ₽'; }
+
+    function formatAmountInput(el) {
+      const raw = el.value.replace(/\D/g, '');
+      el.value = raw ? raw.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
+    }
+
+    function parseAmount(id) {
+      const el = document.getElementById(id);
+      return Number(String(el ? el.value : '').replace(/\D/g, '')) || 0;
+    }
+
+    function setDefaultLoanDates() {
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const todayIso = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+      const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+      const nextIso = `${nextMonth.getFullYear()}-${pad(nextMonth.getMonth() + 1)}-${pad(nextMonth.getDate())}`;
+
+      const issueEl = document.getElementById('admLoanDate');
+      const firstEl = document.getElementById('admLoanFirstPay');
+      if (issueEl && !issueEl.value) issueEl.value = todayIso;
+      if (firstEl && !firstEl.value) firstEl.value = nextIso;
+    }
 
     function esc(str) {
       return String(str || '').replace(/[&<>"']/g, m => ({
@@ -708,7 +749,6 @@
       renderDepositHistory(data.myDepositHistory);
       updateBiometricUI();
 
-      // Сводка фонда (сходящиеся источники: Депозиты + Чистые проценты + Страховка)
       const f = data.fund;
       const netInterestProfit = (f.grossInterest || 0) - (f.totalOpExpenses || 0);
       const totalSources = (f.totalDeposits || 0) + netInterestProfit + (f.insuranceReserve || 0);
@@ -762,6 +802,7 @@
           repSel.add(opt);
         });
         onLoanTypeChange();
+        setDefaultLoanDates();
       }
 
       ALL_LOANS = data.loans || [];
@@ -841,7 +882,7 @@
     }
 
     // ============================================================
-    //  БЫСТРАЯ БИОМЕТРИЯ (МГНОВЕННЫЙ ВХОД ПО КЭШУ + ФОНОВОЕ ОБНОВЛЕНИЕ)
+    //  БЫСТРАЯ БИОМЕТРИЯ
     // ============================================================
 
     function bufToB64(buf) {
@@ -941,7 +982,6 @@
           }
         });
 
-        // Сразу показываем кэшированные данные для мгновенного открытия!
         const cachedRaw = localStorage.getItem('yakjo_cache_data');
         if (cachedRaw) {
           try {
@@ -1121,12 +1161,12 @@
     }
 
     function submitBulkCollection() {
-      const depAmt = Number(document.getElementById('bulkDepAmt').value) || 0;
-      const insAmt = Number(document.getElementById('bulkInsAmt').value) || 0;
+      const depAmt = parseAmount('bulkDepAmt');
+      const insAmt = parseAmount('bulkInsAmt');
       const comment = document.getElementById('bulkComment').value.trim();
       const st = document.getElementById('bulkStatus');
 
-      if (!confirm(`Провести сбор за всех активных участников (Депозит: ${depAmt} ₽ + Страховка: ${insAmt} ₽)?`)) {
+      if (!confirm(`Провести сбор за всех активных участников (Депозит: ${fmt(depAmt)} + Страховка: ${fmt(insAmt)})?`)) {
         return;
       }
 
@@ -1151,8 +1191,8 @@
       const sel = document.getElementById('admRepayLoan');
       const loanId = sel.value;
       const borrower = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].dataset.borrower : '';
-      const p = document.getElementById('admRepayPrincipal').value;
-      const i = document.getElementById('admRepayInterest').value;
+      const p = parseAmount('admRepayPrincipal');
+      const i = parseAmount('admRepayInterest');
       const st = document.getElementById('admRepayStatus');
       st.innerHTML = "⏳ Проведение платежа…";
 
@@ -1160,6 +1200,8 @@
         .then(res => {
           if (res.ok) {
             st.innerHTML = '<span style="color:var(--green);font-weight:700;">✅ Погашение записано!</span>';
+            document.getElementById('admRepayPrincipal').value = '';
+            document.getElementById('admRepayInterest').value = '';
             loadDashboard();
           } else st.innerHTML = '<span style="color:var(--red);">' + esc(res.error) + '</span>';
         });
@@ -1169,24 +1211,43 @@
       const loanType = document.getElementById('admLoanType').value;
       const guarantor = document.getElementById('admLoanGuarantor').value;
       const borrower = loanType === 'Внешний' ? document.getElementById('admLoanBorrower').value.trim() : guarantor;
-      const a = document.getElementById('admLoanAmount').value;
+      const issueDate = document.getElementById('admLoanDate').value;
+      const firstPayDate = document.getElementById('admLoanFirstPay').value;
+      const a = parseAmount('admLoanAmount');
       const r = document.getElementById('admLoanRate').value;
       const t = document.getElementById('admLoanTerm').value;
       const st = document.getElementById('admLoanStatus');
-      st.innerHTML = "⏳ Оформление займа…";
 
-      apiCall({ action: 'add_loan', token: SESSION_TOKEN, guarantor: guarantor, loanType: loanType, borrower: borrower, amount: a, rate: r, term: t })
-        .then(res => {
-          if (res.ok) {
-            st.innerHTML = `<span style="color:var(--green);font-weight:700;">✅ Займ ${esc(res.loanId)} оформлен!</span>`;
-            loadDashboard();
-          } else st.innerHTML = '<span style="color:var(--red);">' + esc(res.error) + '</span>';
-        });
+      if (!a || a <= 0) {
+        st.innerHTML = '<span style="color:var(--red);">Введите сумму кредита</span>';
+        return;
+      }
+
+      st.innerHTML = "⏳ Оформление займа…";
+      apiCall({
+        action: 'add_loan',
+        token: SESSION_TOKEN,
+        guarantor: guarantor,
+        loanType: loanType,
+        borrower: borrower,
+        amount: a,
+        rate: r,
+        term: t,
+        issueDate: issueDate,
+        firstPayDate: firstPayDate
+      }).then(res => {
+        if (res.ok) {
+          st.innerHTML = `<span style="color:var(--green);font-weight:700;">✅ Займ ${esc(res.loanId)} оформлен!</span>`;
+          document.getElementById('admLoanAmount').value = '';
+          document.getElementById('admLoanBorrower').value = '';
+          loadDashboard();
+        } else st.innerHTML = '<span style="color:var(--red);">' + esc(res.error) + '</span>';
+      });
     }
 
     function submitDeposit() {
       const name = document.getElementById('admDepName').value;
-      const amount = document.getElementById('admDepAmount').value;
+      const amount = parseAmount('admDepAmount');
       const comment = document.getElementById('admDepComment').value;
       const st = document.getElementById('admDepStatus');
       st.innerHTML = "⏳ Запись депозита…";
@@ -1221,4 +1282,4 @@
     })();
   </script>
 </body>
-</html>
+</html> 
